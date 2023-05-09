@@ -1,6 +1,6 @@
 {
     "name": "myth-sidebar",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Remember sidebar visibility status.",
     "main": "manifest.json",
     "scripts": {
