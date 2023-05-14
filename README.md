@@ -20,6 +20,8 @@ You can optionally configure the setting so that only currently active skills di
 
 Progress does not show for skills above 120 as the game does not track the experience required for virtual level ups.
 
+Progress does not show for locked skills in adventure mode.
+
 ![Progress](images/progress.png)
 
 ## Settings
