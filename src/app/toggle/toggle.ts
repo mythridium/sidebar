@@ -15,7 +15,7 @@ export class Toggle implements Component {
                 type: 'switch',
                 name: 'remember',
                 label: 'Remember Visibility',
-                hint: 'Remember the sidebar visibility state between closing and reopening.',
+                hint: 'Remember the visibility state between closing and reopening.',
                 default: true
             },
             {
@@ -76,6 +76,12 @@ export class Toggle implements Component {
         });
 
         this.context.onCharacterLoaded(() => {
+            this.patchCombatStats();
+            this.patchMinibar();
+
+            this.toggleCombatStats();
+            this.toggleMinibar();
+
             if (!this.isEnabled) {
                 return;
             }
@@ -113,6 +119,72 @@ export class Toggle implements Component {
             if (items.includes(category.id)) {
                 category.toggle(value(category.id, visibility));
             }
+        }
+    }
+
+    private toggleCombatStats() {
+        if (!this.isEnabled) {
+            return;
+        }
+
+        const visibility = (this.context.characterStorage.getItem('combat-stats') as boolean) ?? false;
+        const combatElement = document.getElementById('combat-skill-progress-menu');
+
+        if (
+            (combatElement?.classList.contains('d-none') && visibility) ||
+            (!combatElement?.classList.contains('d-none') && !visibility)
+        ) {
+            toggleCombatSkillMenu();
+        }
+    }
+
+    private patchCombatStats() {
+        const context = this.context;
+
+        if ('toggleCombatSkillMenu' in window) {
+            const _original = toggleCombatSkillMenu;
+            const combatElement = document.getElementById('combat-skill-progress-menu');
+
+            window.toggleCombatSkillMenu = function (...args) {
+                _original(...args);
+
+                const isVisible = !combatElement?.classList.contains('d-none') ?? false;
+
+                context.characterStorage.setItem('combat-stats', isVisible);
+            };
+        }
+    }
+
+    private toggleMinibar() {
+        if (!this.isEnabled) {
+            return;
+        }
+
+        const visibility = (this.context.characterStorage.getItem('minibar') as boolean) ?? true;
+        const minibar = document.getElementById('skill-footer-minibar');
+
+        if (
+            (minibar?.classList.contains('d-none') && visibility) ||
+            (!minibar?.classList.contains('d-none') && !visibility)
+        ) {
+            toggleSkillMinibar();
+        }
+    }
+
+    private patchMinibar() {
+        const context = this.context;
+
+        if ('toggleCombatSkillMenu' in window) {
+            const _original = toggleSkillMinibar;
+            const minibar = document.getElementById('skill-footer-minibar');
+
+            window.toggleSkillMinibar = function (...args) {
+                _original(...args);
+
+                const isVisible = !minibar?.classList.contains('d-none') ?? false;
+
+                context.characterStorage.setItem('minibar', isVisible);
+            };
         }
     }
 }

@@ -10,6 +10,8 @@ Remember the category toggled status between closing and re-opening the game. If
 
 You can also add a visibility toggle to all menu categories.
 
+This also remembers to open/close state of the combat skill progress dropdown and the minibar.
+
 ![Toggle](images/toggle.png)
 
 ## Experience Progress
