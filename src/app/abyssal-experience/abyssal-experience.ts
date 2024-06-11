@@ -1,6 +1,6 @@
 import { Component } from '../../framework/component';
 import { Renderer, Component as RenderComponent } from '../../framework/renderer';
-import './experience.scss';
+import './abyssal-experience.scss';
 
 interface RenderContext {
     component: RenderComponent<any>;
@@ -8,21 +8,22 @@ interface RenderContext {
     navs: SkillNavElem[];
 }
 
-export class Experience implements Component {
-    public readonly template = 'app/experience/experience.html';
+export class AbyssalExperience implements Component {
+    public readonly template = 'app/abyssal-experience/abyssal-experience.html';
     public readonly settings = {
-        section: 'Experience',
+        section: 'Abyssal Experience',
         config: [
             {
                 type: 'switch',
-                name: 'experience-enabled',
-                label: 'Display Experience Progress',
-                hint: 'Shows experience progress on sidebar items.',
+                name: 'abyssal-experience-enabled',
+                label: 'Display Abyssal Experience Progress',
+                hint: 'Shows abyssal experience progress on sidebar items.',
                 default: false,
                 onChange: (value: boolean) => {
                     for (const { component, skill } of this.renderers) {
                         component.update({
-                            progress: skill.nextLevelProgress,
+                            // @ts-ignore // TODO: TYPES
+                            progress: skill.nextAbyssalLevelProgress,
                             isVisible: this.isVisible(skill, value)
                         });
                     }
@@ -30,14 +31,15 @@ export class Experience implements Component {
             },
             {
                 type: 'switch',
-                name: 'experience-active',
+                name: 'abyssal-experience-active',
                 label: 'Only Active',
                 hint: 'Only displays progress for the currently active skills.',
                 default: false,
                 onChange: (value: boolean) => {
                     for (const { component, skill } of this.renderers) {
                         component.update({
-                            progress: skill.nextLevelProgress,
+                            // @ts-ignore // TODO: TYPES
+                            progress: skill.nextAbyssalLevelProgress,
                             isVisible: this.isVisible(skill, undefined, value)
                         });
                     }
@@ -64,16 +66,19 @@ export class Experience implements Component {
                 this.renderers.push({
                     component: new Renderer(this.context).create<{ progress: number; isVisible: boolean }>({
                         shouldRender: () =>
-                            skill.renderQueue.xp ||
-                            skill.renderQueue.level ||
+                            // @ts-ignore // TODO: TYPES
+                            skill.renderQueue.abyssalXP ||
+                            // @ts-ignore // TODO: TYPES
+                            skill.renderQueue.abyssalLevel ||
                             skill.renderQueue.lock ||
                             game.renderQueue.activeSkills,
                         getUpdateState: () => ({
-                            progress: skill.nextLevelProgress,
+                            // @ts-ignore // TODO: TYPES
+                            progress: skill.nextAbyssalLevelProgress,
                             isVisible: this.isVisible(skill)
                         }),
                         component: {
-                            $template: '#myth-sidebar-experience',
+                            $template: '#myth-sidebar-abyssal-experience',
                             progress: 0,
                             isVisible: true,
                             update({ progress, isVisible }) {
@@ -95,7 +100,8 @@ export class Experience implements Component {
                 }
 
                 component.update({
-                    progress: skill.nextLevelProgress,
+                    // @ts-ignore // TODO: TYPES
+                    progress: skill.nextAbyssalLevelProgress,
                     isVisible: this.isVisible(skill)
                 });
             }
@@ -111,6 +117,7 @@ export class Experience implements Component {
             return false;
         }
 
-        return enabled && skill.isUnlocked && skill.nextLevelProgress !== 100;
+        // @ts-ignore // TODO: TYPES
+        return enabled && skill.isUnlocked && skill.nextAbyssalLevelProgress !== 100;
     }
 }

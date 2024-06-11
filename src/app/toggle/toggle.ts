@@ -128,7 +128,7 @@ export class Toggle implements Component {
         }
 
         const visibility = (this.context.characterStorage.getItem('combat-stats') as boolean) ?? false;
-        const combatElement = document.getElementById('combat-skill-progress-menu');
+        const combatElement = document.querySelector('combat-skill-progress-table');
 
         if (
             (combatElement?.classList.contains('d-none') && visibility) ||
@@ -143,7 +143,7 @@ export class Toggle implements Component {
 
         if ('toggleCombatSkillMenu' in window) {
             const _original = toggleCombatSkillMenu;
-            const combatElement = document.getElementById('combat-skill-progress-menu');
+            const combatElement = document.querySelector('combat-skill-progress-table');
 
             window.toggleCombatSkillMenu = function (...args) {
                 _original(...args);
