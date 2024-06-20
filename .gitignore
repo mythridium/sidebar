@@ -2,3 +2,5 @@ node_modules
 packed
 dist
 build
+.tsimp
+.output

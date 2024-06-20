@@ -64,10 +64,11 @@ export class Experience implements Component {
                 this.renderers.push({
                     component: new Renderer(this.context).create<{ progress: number; isVisible: boolean }>({
                         shouldRender: () =>
-                            skill.renderQueue.xp ||
-                            skill.renderQueue.level ||
-                            skill.renderQueue.lock ||
-                            game.renderQueue.activeSkills,
+                            !loadingOfflineProgress &&
+                            (skill.renderQueue.xp ||
+                                skill.renderQueue.level ||
+                                skill.renderQueue.lock ||
+                                game.renderQueue.activeSkills),
                         getUpdateState: () => ({
                             progress: skill.nextLevelProgress,
                             isVisible: this.isVisible(skill)

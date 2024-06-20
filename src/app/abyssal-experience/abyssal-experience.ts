@@ -66,12 +66,13 @@ export class AbyssalExperience implements Component {
                 this.renderers.push({
                     component: new Renderer(this.context).create<{ progress: number; isVisible: boolean }>({
                         shouldRender: () =>
+                            !loadingOfflineProgress &&
                             // @ts-ignore // TODO: TYPES
-                            skill.renderQueue.abyssalXP ||
-                            // @ts-ignore // TODO: TYPES
-                            skill.renderQueue.abyssalLevel ||
-                            skill.renderQueue.lock ||
-                            game.renderQueue.activeSkills,
+                            (skill.renderQueue.abyssalXP ||
+                                // @ts-ignore // TODO: TYPES
+                                skill.renderQueue.abyssalLevel ||
+                                skill.renderQueue.lock ||
+                                game.renderQueue.activeSkills),
                         getUpdateState: () => ({
                             // @ts-ignore // TODO: TYPES
                             progress: skill.nextAbyssalLevelProgress,
