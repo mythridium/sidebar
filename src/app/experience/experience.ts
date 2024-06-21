@@ -63,22 +63,24 @@ export class Experience implements Component {
             for (const [skill, navs] of Array.from(skillNav.navs)) {
                 this.renderers.push({
                     component: new Renderer(this.context).create<{ progress: number; isVisible: boolean }>({
-                        shouldRender: () =>
+                        shouldRender: (component, progress) =>
                             !loadingOfflineProgress &&
+                            component.progress !== progress &&
                             (skill.renderQueue.xp ||
                                 skill.renderQueue.level ||
                                 skill.renderQueue.lock ||
                                 game.renderQueue.activeSkills),
                         getUpdateState: () => ({
-                            progress: skill.nextLevelProgress,
+                            progress: this.getProgress(skill),
                             isVisible: this.isVisible(skill)
                         }),
+                        getProgress: () => this.getProgress(skill),
                         component: {
                             $template: '#myth-sidebar-experience',
                             progress: 0,
                             isVisible: true,
                             update({ progress, isVisible }) {
-                                this.progress = Math.floor(progress);
+                                this.progress = progress;
                                 this.isVisible = isVisible;
                             }
                         }
@@ -94,13 +96,12 @@ export class Experience implements Component {
                 for (const nav of navs) {
                     ui.create(component, nav.item.itemEl);
                 }
-
-                component.update({
-                    progress: skill.nextLevelProgress,
-                    isVisible: this.isVisible(skill)
-                });
             }
         });
+    }
+
+    private getProgress(skill: AnySkill) {
+        return Math.floor(skill.nextLevelProgress);
     }
 
     private isActive(skill: AnySkill) {

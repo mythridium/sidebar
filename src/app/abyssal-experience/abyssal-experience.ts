@@ -65,8 +65,9 @@ export class AbyssalExperience implements Component {
             for (const [skill, navs] of Array.from(skillNav.navs)) {
                 this.renderers.push({
                     component: new Renderer(this.context).create<{ progress: number; isVisible: boolean }>({
-                        shouldRender: () =>
+                        shouldRender: (component, progress) =>
                             !loadingOfflineProgress &&
+                            component.progress !== progress &&
                             // @ts-ignore // TODO: TYPES
                             (skill.renderQueue.abyssalXP ||
                                 // @ts-ignore // TODO: TYPES
@@ -74,16 +75,16 @@ export class AbyssalExperience implements Component {
                                 skill.renderQueue.lock ||
                                 game.renderQueue.activeSkills),
                         getUpdateState: () => ({
-                            // @ts-ignore // TODO: TYPES
-                            progress: skill.nextAbyssalLevelProgress,
+                            progress: this.getProgress(skill),
                             isVisible: this.isVisible(skill)
                         }),
+                        getProgress: () => this.getProgress(skill),
                         component: {
                             $template: '#myth-sidebar-abyssal-experience',
                             progress: 0,
                             isVisible: true,
                             update({ progress, isVisible }) {
-                                this.progress = Math.floor(progress);
+                                this.progress = progress;
                                 this.isVisible = isVisible;
                             }
                         }
@@ -99,14 +100,13 @@ export class AbyssalExperience implements Component {
                 for (const nav of navs) {
                     ui.create(component, nav.item.itemEl);
                 }
-
-                component.update({
-                    // @ts-ignore // TODO: TYPES
-                    progress: skill.nextAbyssalLevelProgress,
-                    isVisible: this.isVisible(skill)
-                });
             }
         });
+    }
+
+    private getProgress(skill: AnySkill) {
+        // @ts-ignore // TODO: TYPES
+        return Math.floor(skill.nextAbyssalLevelProgress);
     }
 
     private isActive(skill: AnySkill) {
