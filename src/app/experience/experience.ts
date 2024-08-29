@@ -63,13 +63,20 @@ export class Experience implements Component {
             for (const [skill, navs] of Array.from(skillNav.navs)) {
                 this.renderers.push({
                     component: new Renderer(this.context).create<{ progress: number; isVisible: boolean }>({
-                        shouldRender: (component, progress) =>
-                            !loadingOfflineProgress &&
-                            component.progress !== progress &&
-                            (skill.renderQueue.xp ||
-                                skill.renderQueue.level ||
-                                skill.renderQueue.lock ||
-                                game.renderQueue.activeSkills),
+                        shouldRender: (component, progress) => {
+                            if (loadingOfflineProgress) {
+                                return false;
+                            }
+
+                            if (game.renderQueue.activeSkills) {
+                                return true;
+                            }
+
+                            return (
+                                component.progress !== progress &&
+                                (skill.renderQueue.xp || skill.renderQueue.level || skill.renderQueue.lock)
+                            );
+                        },
                         getUpdateState: () => ({
                             progress: this.getProgress(skill),
                             isVisible: this.isVisible(skill)

@@ -65,15 +65,24 @@ export class AbyssalExperience implements Component {
             for (const [skill, navs] of Array.from(skillNav.navs)) {
                 this.renderers.push({
                     component: new Renderer(this.context).create<{ progress: number; isVisible: boolean }>({
-                        shouldRender: (component, progress) =>
-                            !loadingOfflineProgress &&
-                            component.progress !== progress &&
-                            // @ts-ignore // TODO: TYPES
-                            (skill.renderQueue.abyssalXP ||
+                        shouldRender: (component, progress) => {
+                            if (loadingOfflineProgress) {
+                                return false;
+                            }
+
+                            if (game.renderQueue.activeSkills) {
+                                return true;
+                            }
+
+                            return (
+                                component.progress !== progress &&
                                 // @ts-ignore // TODO: TYPES
-                                skill.renderQueue.abyssalLevel ||
-                                skill.renderQueue.lock ||
-                                game.renderQueue.activeSkills),
+                                (skill.renderQueue.abyssalXP ||
+                                    // @ts-ignore // TODO: TYPES
+                                    skill.renderQueue.abyssalLevel ||
+                                    skill.renderQueue.lock)
+                            );
+                        },
                         getUpdateState: () => ({
                             progress: this.getProgress(skill),
                             isVisible: this.isVisible(skill)
