@@ -14,11 +14,13 @@ export class Renderer {
     constructor(private readonly context: Modding.ModContext) {}
 
     public create<T>({ shouldRender, getUpdateState, getProgress, component }: Definition<T>) {
-        this.context.patch(<any>Skill, 'renderXP').before(() => {
+        // @ts-ignore Argument of type 'string' is not assignable to parameter of type 'never'.
+        this.context.patch(Skill, 'renderXP').before(() => {
             this.isUpdated = shouldRender(component, getProgress());
         });
 
-        this.context.patch(<any>Skill, 'renderXP').after(() => {
+        // @ts-ignore Argument of type 'string' is not assignable to parameter of type 'never'.
+        this.context.patch(Skill, 'renderXP').after(() => {
             if (!this.isUpdated) {
                 return;
             }
@@ -27,11 +29,13 @@ export class Renderer {
             component.update(getUpdateState());
         });
 
-        this.context.patch(<any>Skill, 'renderAbyssalXP').before(() => {
+        // @ts-ignore Argument of type 'string' is not assignable to parameter of type 'never'.
+        this.context.patch(Skill, 'renderAbyssalXP').before(() => {
             this.isUpdated = shouldRender(component, getProgress());
         });
 
-        this.context.patch(<any>Skill, 'renderAbyssalXP').after(() => {
+        // @ts-ignore Argument of type 'string' is not assignable to parameter of type 'never'.
+        this.context.patch(Skill, 'renderAbyssalXP').after(() => {
             if (!this.isUpdated) {
                 return;
             }

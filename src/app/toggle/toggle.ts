@@ -41,7 +41,7 @@ export class Toggle implements Component {
         ]
     };
 
-    private readonly default = ['Combat', 'Non-Combat', 'Passive'];
+    private readonly default = ['Combat', 'Non-Combat', 'Passive', 'Into the Abyss'];
     private readonly toggleable = ['Minigame', 'Modding', 'General', 'Socials', 'Other'];
 
     private get isEnabled() {
@@ -60,6 +60,14 @@ export class Toggle implements Component {
 
     public init() {
         const that = this;
+
+        let once = false;
+        this.context.patch(RealmSidebarSelectOption, 'showRealmSidebarOption').after(function () {
+            if (!once && this.realm.id === 'melvorItA:Abyssal') {
+                once = true;
+                that.toggle(['Into the Abyss'], (id: string, visibility: Visibility) => visibility[id] ?? true);
+            }
+        });
 
         this.context.onInterfaceReady(() => {
             if (!this.toggleAll) {
@@ -148,7 +156,7 @@ export class Toggle implements Component {
             window.toggleCombatSkillMenu = function (...args) {
                 _original(...args);
 
-                const isVisible = !combatElement?.classList.contains('d-none') ?? false;
+                const isVisible = !(combatElement?.classList.contains('d-none') ?? false);
 
                 context.characterStorage.setItem('combat-stats', isVisible);
             };
@@ -181,7 +189,7 @@ export class Toggle implements Component {
             window.toggleSkillMinibar = function (...args) {
                 _original(...args);
 
-                const isVisible = !minibar?.classList.contains('d-none') ?? false;
+                const isVisible = !(minibar?.classList.contains('d-none') ?? false);
 
                 context.characterStorage.setItem('minibar', isVisible);
             };

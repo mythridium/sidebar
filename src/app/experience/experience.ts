@@ -5,7 +5,7 @@ import './experience.scss';
 interface RenderContext {
     component: RenderComponent<any>;
     skill: AnySkill;
-    navs: SkillNavElem[];
+    navs: SkillSidebarItem[];
 }
 
 export class Experience implements Component {
